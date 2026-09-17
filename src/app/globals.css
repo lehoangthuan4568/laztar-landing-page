@@ -1,26 +1,45 @@
 @import "tailwindcss";
 
+/* ===== LAZTAR CORPORATE — Editorial & Swiss Minimalist ===== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --navy: #1A2654;
+  --navy-dark: #0A0F24;
+  --blue-accent: #3D5AFE;
+  
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #FAFAFA;
+  
+  --text-primary: #0A0F24;
+  --text-secondary: #4B5563;
+  --text-muted: #9CA3AF;
+  
+  --border: #E5E7EB;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+  --font-sans: var(--font-geist-sans), "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+::selection {
+  background: var(--navy);
+  color: white;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D1D5DB; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }

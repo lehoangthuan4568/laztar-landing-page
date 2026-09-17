@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useScroll, useMotionValueEvent } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 
 const navLinks = [
   { name: "Về chúng tôi", href: "#about" },
@@ -12,96 +14,101 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { scrollY } = useScroll();
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setScrolled(latest > 30);
+  });
 
   return (
-    <nav
+    <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-white border-b border-[var(--border)]"
-          : "bg-transparent"
+          ? "bg-[rgba(6,9,19,0.85)] backdrop-blur-md border-b border-[var(--border-subtle)] shadow-lg shadow-black/20"
+          : "bg-transparent border-b border-transparent"
       }`}
     >
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-28 flex items-center justify-between h-20 md:h-24">
-        {/* Logo */}
-        <a href="#" className="flex items-center">
-          <img 
-            src="/images/logo.png" 
-            alt="LAZTAR Logo" 
-            className="h-8 md:h-10 transition-all duration-300"
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-12 flex items-center justify-between h-[68px]">
+        {/* Brand Logo */}
+        <a href="#" className="flex items-center gap-3 group focus:outline-none">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/logo.png"
+            alt="LAZTAR Logo"
+            className="h-8 md:h-9 object-contain transition-transform duration-300 group-hover:scale-105"
           />
         </a>
 
-        {/* Right side: nav + language + hamburger */}
-        <div className="flex items-center gap-6">
-          {/* Desktop links */}
-          <div className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className={`text-sm font-semibold transition-colors ${
-                  scrolled
-                    ? "text-[var(--text-body)] hover:text-[var(--navy)]"
-                    : "text-white/70 hover:text-white"
-                }`}
-              >
-                {link.name}
-              </a>
-            ))}
-          </div>
+        {/* Desktop Navigation links */}
+        <nav className="hidden md:flex items-center gap-8" aria-label="Main Navigation">
+          {navLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.href}
+              className="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              {link.name}
+            </a>
+          ))}
+        </nav>
 
-          {/* Language badge */}
-          <div className={`hidden md:flex items-center gap-1.5 text-sm font-semibold ${
-            scrolled ? "text-[var(--navy)]" : "text-white/70"
-          }`}>
-            <span className="text-xs">🇻🇳</span> VI
-          </div>
-
-          {/* Hamburger */}
-          <button
-            className="flex flex-col gap-[5px] p-2"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Menu"
+        {/* Right CTA */}
+        <div className="hidden md:flex items-center gap-5">
+          <span className="text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] border border-[var(--border-subtle)] px-2.5 py-1 rounded-full">
+            VN
+          </span>
+          <a
+            href="https://laztar.com/vi/contact#contact-form"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-2 bg-[var(--text-primary)] text-[var(--bg-base)] px-5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider hover:bg-white transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
-            {[0, 1, 2].map((i) => (
-              <span
-                key={i}
-                className={`block w-5 h-[1.5px] transition-all duration-300 ${
-                  scrolled ? "bg-[var(--navy)]" : "bg-white"
-                } ${
-                  mobileOpen && i === 0 ? "rotate-45 translate-y-[6.5px]" : ""
-                } ${
-                  mobileOpen && i === 1 ? "opacity-0" : ""
-                } ${
-                  mobileOpen && i === 2 ? "-rotate-45 -translate-y-[6.5px]" : ""
-                }`}
-              />
-            ))}
-          </button>
+            Liên hệ ngay
+            <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </a>
         </div>
+
+        {/* Mobile Hamburger toggle */}
+        <button
+          type="button"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="md:hidden p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none"
+          aria-label="Toggle navigation menu"
+          aria-expanded={mobileOpen}
+        >
+          <div className="w-5 h-4 flex flex-col justify-between">
+            <span
+              className={`h-0.5 w-full bg-current transform transition-transform duration-300 ${
+                mobileOpen ? "rotate-45 translate-y-1.5" : ""
+              }`}
+            />
+            <span
+              className={`h-0.5 w-full bg-current transition-opacity duration-300 ${
+                mobileOpen ? "opacity-0" : ""
+              }`}
+            />
+            <span
+              className={`h-0.5 w-full bg-current transform transition-transform duration-300 ${
+                mobileOpen ? "-rotate-45 -translate-y-1.5" : ""
+              }`}
+            />
+          </div>
+        </button>
       </div>
 
-      {/* Mobile/Slide menu */}
+      {/* Mobile Drawer */}
       <div
-        className={`overflow-hidden transition-all duration-400 ${
-          mobileOpen
-            ? "max-h-[400px] bg-white shadow-[var(--card-shadow)]"
-            : "max-h-0"
+        className={`md:hidden overflow-hidden transition-all duration-300 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] ${
+          mobileOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="px-6 lg:px-28 py-8 flex flex-col gap-5">
+        <div className="px-6 py-6 flex flex-col gap-4">
           {navLinks.map((link) => (
             <a
               key={link.name}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className="text-[var(--navy)] font-bold text-lg hover:text-[var(--blue-accent)] transition-colors"
+              className="text-base font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
             >
               {link.name}
             </a>
@@ -110,17 +117,14 @@ export default function Navbar() {
             href="https://laztar.com/vi/contact#contact-form"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 pl-6 pr-2 py-2 rounded-full bg-[var(--navy)] text-white font-bold uppercase tracking-wider text-sm w-fit mt-2"
+            onClick={() => setMobileOpen(false)}
+            className="inline-flex items-center justify-center gap-2 bg-[var(--text-primary)] text-[var(--bg-base)] px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider w-full mt-2"
           >
             Liên hệ ngay
-            <span className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-              <svg className="w-3.5 h-3.5 text-[var(--navy)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="m9 18 6-6-6-6" />
-              </svg>
-            </span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
           </a>
         </div>
       </div>
-    </nav>
+    </header>
   );
 }

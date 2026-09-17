@@ -1,45 +1,62 @@
 @import "tailwindcss";
 
-/* ===== LAZTAR CORPORATE — Editorial & Swiss Minimalist ===== */
+/* ===== LAZTAR CORPORATE - Anti-Slop Architectural System ===== */
 
 :root {
-  --navy: #1A2654;
-  --navy-dark: #0A0F24;
-  --blue-accent: #3D5AFE;
-  
-  --bg-primary: #FFFFFF;
-  --bg-secondary: #FAFAFA;
-  
-  --text-primary: #0A0F24;
-  --text-secondary: #4B5563;
-  --text-muted: #9CA3AF;
-  
-  --border: #E5E7EB;
+  --bg-base: #060913;
+  --bg-surface: #0B1120;
+  --bg-elevated: #111B30;
+  --bg-card: rgba(17, 27, 48, 0.7);
+
+  --accent: #3B82F6;
+  --accent-hover: #60A5FA;
+  --accent-glow: rgba(59, 130, 246, 0.15);
+
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.18);
+  --border-accent: rgba(59, 130, 246, 0.35);
 }
 
 @theme {
   --font-sans: var(--font-geist-sans), "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), "JetBrains Mono", ui-monospace, monospace;
 }
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
 }
 
 body {
-  background-color: var(--bg-primary);
+  background-color: var(--bg-base);
   color: var(--text-primary);
   font-family: var(--font-sans);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 ::selection {
-  background: var(--navy);
-  color: white;
+  background: var(--accent);
+  color: #FFFFFF;
 }
 
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #D1D5DB; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: #1E293B;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}

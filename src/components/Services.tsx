@@ -1,91 +1,187 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { Layout, Globe, Smartphone, Sparkles, ArrowUpRight, Check } from "lucide-react";
 
 const services = [
   {
-    title: "Giải pháp UI/UX toàn diện,\ntối ưu hóa trải nghiệm số",
-    description: "Dịch vụ tư vấn và thiết kế UI/UX toàn diện, giúp xây dựng giao diện trực quan và trải nghiệm người dùng liền mạch cho sản phẩm của bạn.",
-    image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&h=400&fit=crop&q=80",
+    id: "uiux",
+    title: "Giải pháp UI/UX toàn diện",
+    subtitle: "Tối ưu hóa trải nghiệm số",
+    description: "Tư vấn và kiến tạo hệ thống Design System chuyên nghiệp, tối ưu hành trình người dùng và nâng tầm định vị thương hiệu trên mọi thiết bị.",
+    icon: <Layout className="w-5 h-5" />,
+    features: [
+      "Kiến trúc thông tin và phân luồng người dùng",
+      "Xây dựng Design System đồng bộ và mở rộng",
+      "Kiểm thử trải nghiệm và chuẩn hóa Accessibility",
+    ],
+    link: "https://laztar.com/vi/services",
   },
   {
-    title: "Thiết kế & Phát triển website,\nứng dụng Web",
-    description: "Phát triển website tùy chỉnh với thiết kế ấn tượng, hiệu suất tối ưu và tiêu chuẩn kỹ thuật cao - mang đến trải nghiệm người dùng vượt trội.",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop&q=80",
+    id: "web",
+    title: "Phát triển Website và Web App",
+    subtitle: "Hiệu năng cao và chuẩn SEO",
+    description: "Xây dựng ứng dụng web hiện đại với kiến trúc Server Components, tốc độ tải trang vượt trội, bảo mật chặt chẽ và trải nghiệm mượt mà.",
+    icon: <Globe className="w-5 h-5" />,
+    features: [
+      "Kiến trúc Next.js và React hiện đại",
+      "Tối ưu Core Web Vitals và SEO kỹ thuật số",
+      "Tích hợp API và hệ thống cơ sở dữ liệu quy mô lớn",
+    ],
+    link: "https://laztar.com/vi/services",
   },
   {
-    title: "Dịch vụ thiết kế và phát triển\nApp đa nền tảng",
-    description: "Biến ý tưởng thành ứng dụng di động hiệu suất cao (iOS & Android) với trải nghiệm mượt mà, ổn định và được xây dựng dựa trên nhu cầu thực tế của thị trường.",
-    image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=400&fit=crop&q=80",
+    id: "mobile",
+    title: "Phát triển App đa nền tảng",
+    subtitle: "iOS và Android mượt mà",
+    description: "Hiện thực hóa ý tưởng thành ứng dụng di động hiệu năng cao với giao diện trực quan, phản hồi thời gian thực và độ ổn định cao.",
+    icon: <Smartphone className="w-5 h-5" />,
+    features: [
+      "Ứng dụng gốc (Native) và giải pháp đa nền tảng",
+      "Đồng bộ dữ liệu thời gian thực và xử lý ngoại tuyến",
+      "Quản lý vòng đời phát hành ứng dụng lên App Store / Google Play",
+    ],
+    link: "https://laztar.com/vi/services",
   },
   {
-    title: "Tư vấn & Thúc đẩy chiến lược\nchuyển đổi số toàn diện",
-    description: "LAZTAR đồng hành cùng doanh nghiệp trong việc xây dựng chiến lược, cung cấp tư vấn chuyên sâu và triển khai các giải pháp công nghệ phù hợp nhằm tối ưu vận hành.",
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop&q=80",
+    id: "consulting",
+    title: "Tư vấn chuyển đổi số",
+    subtitle: "Chiến lược công nghệ toàn diện",
+    description: "Đồng hành cùng ban lãnh đạo doanh nghiệp định hình lộ trình số hóa, tái cấu trúc hệ thống công nghệ và tối ưu hóa chi phí vận hành.",
+    icon: <Sparkles className="w-5 h-5" />,
+    features: [
+      "Đánh giá và kiểm toán kiến trúc hạ tầng phần mềm",
+      "Lập bản đồ lộ trình công nghệ dài hạn cho doanh nghiệp",
+      "Tối ưu quy trình vận hành kỹ thuật số",
+    ],
+    link: "https://laztar.com/vi/services",
   },
 ];
 
 export default function Services() {
-  return (
-    <section id="services" className="py-24 md:py-32 bg-white">
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-28">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl md:text-5xl font-bold text-[var(--navy-dark)] uppercase tracking-tight">
-            Dịch Vụ Của LAZTAR
-          </h2>
-        </motion.div>
+  const [activeId, setActiveId] = useState(services[0].id);
+  const activeService = services.find((s) => s.id === activeId) || services[0];
+  const reduceMotion = useReducedMotion();
 
-        <div className="flex flex-col gap-8">
-          {services.map((service, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.6 }}
-              className="group flex flex-col md:flex-row bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl md:rounded-3xl overflow-hidden hover:border-gray-300 transition-colors"
-            >
-              {/* Content Box */}
-              <div className="w-full md:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
-                <h3 className="text-2xl md:text-3xl font-bold text-[var(--navy-dark)] mb-4 whitespace-pre-line leading-tight">
-                  {service.title}
-                </h3>
-                <p className="text-[var(--text-secondary)] font-medium leading-relaxed mb-8">
-                  {service.description}
-                </p>
+  return (
+    <section id="services" className="py-24 md:py-32 bg-[var(--bg-surface)] border-y border-[var(--border-subtle)]">
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+        {/* Section Header: Headline only, vertical stack */}
+        <div className="max-w-2xl mb-16">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[var(--text-primary)] mb-4">
+            Dịch vụ chuyên biệt
+          </h2>
+          <p className="text-base text-[var(--text-secondary)] leading-relaxed">
+            Các khối giải pháp công nghệ toàn diện được tùy biến theo nhu cầu đặc thù của từng doanh nghiệp.
+          </p>
+        </div>
+
+        {/* Interactive Service Explorer */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Service Selector List (5 Cols) */}
+          <div className="lg:col-span-5 flex flex-col gap-3">
+            {services.map((service) => {
+              const isActive = service.id === activeId;
+              return (
+                <button
+                  key={service.id}
+                  type="button"
+                  onClick={() => setActiveId(service.id)}
+                  className={`text-left p-5 rounded-xl border transition-all duration-300 flex items-center justify-between group ${
+                    isActive
+                      ? "bg-[var(--bg-elevated)] border-[var(--border-accent)] shadow-lg shadow-black/20"
+                      : "bg-transparent border-[var(--border-subtle)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-elevated)]/40"
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
+                        isActive
+                          ? "bg-[var(--accent)] text-white"
+                          : "bg-[var(--bg-base)] text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]"
+                      }`}
+                    >
+                      {service.icon}
+                    </div>
+                    <div>
+                      <div
+                        className={`text-base font-semibold transition-colors ${
+                          isActive ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]"
+                        }`}
+                      >
+                        {service.title}
+                      </div>
+                      <div className="text-xs text-[var(--text-muted)] mt-0.5">
+                        {service.subtitle}
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      isActive ? "bg-[var(--accent)] scale-100" : "bg-transparent scale-0"
+                    }`}
+                  />
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Service Active Detail Panel (7 Cols) */}
+          <div className="lg:col-span-7">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeService.id}
+                initial={reduceMotion ? {} : { opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduceMotion ? {} : { opacity: 0, y: -12 }}
+                transition={{ duration: 0.3 }}
+                className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-base)] p-8 sm:p-10 flex flex-col justify-between min-h-[380px]"
+              >
+                <div>
+                  <div className="inline-flex items-center gap-2 text-xs font-mono text-[var(--accent)] uppercase tracking-wider mb-4">
+                    <span>{activeService.subtitle}</span>
+                  </div>
+
+                  <h3 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] mb-4">
+                    {activeService.title}
+                  </h3>
+
+                  <p className="text-base text-[var(--text-secondary)] leading-relaxed mb-8">
+                    {activeService.description}
+                  </p>
+
+                  <div className="border-t border-[var(--border-subtle)] pt-6 mb-8">
+                    <div className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-4">
+                      Tiêu chuẩn thực thi
+                    </div>
+                    <ul className="space-y-3">
+                      {activeService.features.map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-3 text-sm text-[var(--text-secondary)]">
+                          <Check className="w-4 h-4 text-[var(--accent)] shrink-0 mt-0.5" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
                 <div>
                   <a
-                    href="https://laztar.com/vi/services"
+                    href={activeService.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 border border-[var(--border)] bg-white text-[var(--navy-dark)] px-6 py-2.5 rounded-full font-bold uppercase tracking-wider text-xs hover:bg-[var(--navy-dark)] hover:text-white hover:border-[var(--navy-dark)] transition-all"
+                    className="inline-flex items-center gap-2 bg-[var(--text-primary)] text-[var(--bg-base)] px-6 py-3 rounded-full text-xs font-semibold uppercase tracking-wider hover:bg-white transition-all active:scale-[0.98]"
                   >
-                    Xem thêm
-                    <ArrowRight className="w-4 h-4" />
+                    Xem chi tiết dịch vụ
+                    <ArrowUpRight className="w-4 h-4" />
                   </a>
                 </div>
-              </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-              {/* Image Box */}
-              <div className="w-full md:w-1/2 aspect-[4/3] md:aspect-auto relative overflow-hidden bg-white p-4 md:p-8">
-                <div className="w-full h-full rounded-xl overflow-hidden shadow-sm">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={service.image}
-                    alt="Service cover"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
-                </div>
-              </div>
-            </motion.div>
-          ))}
         </div>
       </div>
     </section>

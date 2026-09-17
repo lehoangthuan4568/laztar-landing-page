@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,21 +12,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
   title: "LAZTAR | Nền Tảng Công Nghệ Tương Lai",
-  description: "LAZTAR - Cung cấp giải pháp phần mềm và đào tạo lập trình viên chất lượng cao.",
+  description: "LAZTAR - Kiến tạo giải pháp số đột phá và tối ưu hóa vận hành cho doanh nghiệp.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="vi"
-      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

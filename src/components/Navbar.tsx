@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useScroll, useMotionValueEvent } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
@@ -14,6 +14,7 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
@@ -22,6 +23,12 @@ export default function Navbar() {
 
   return (
     <header
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && mobileOpen) {
+          setMobileOpen(false);
+          menuButtonRef.current?.focus();
+        }
+      }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
           ? "bg-[rgba(6,9,19,0.85)] backdrop-blur-md border-b border-[var(--border-subtle)] shadow-lg shadow-black/20"
@@ -30,7 +37,7 @@ export default function Navbar() {
     >
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12 flex items-center justify-between h-[68px]">
         {/* Brand Logo */}
-        <a href="#" className="flex items-center gap-3 group focus:outline-none">
+        <a href="#" className="flex items-center gap-3 group">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/logo.png"
@@ -70,11 +77,13 @@ export default function Navbar() {
 
         {/* Mobile Hamburger toggle */}
         <button
+          ref={menuButtonRef}
           type="button"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none"
-          aria-label="Toggle navigation menu"
+          onClick={() => setMobileOpen((open) => !open)}
+          className="md:hidden min-w-11 min-h-11 p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+          aria-label={mobileOpen ? "Đóng menu điều hướng" : "Mở menu điều hướng"}
           aria-expanded={mobileOpen}
+          aria-controls="mobile-navigation"
         >
           <div className="w-5 h-4 flex flex-col justify-between">
             <span
@@ -98,8 +107,10 @@ export default function Navbar() {
 
       {/* Mobile Drawer */}
       <div
+        id="mobile-navigation"
+        inert={!mobileOpen}
         className={`md:hidden overflow-hidden transition-all duration-300 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] ${
-          mobileOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
+          mobileOpen ? "visible max-h-[calc(100dvh-68px)] overflow-y-auto opacity-100" : "invisible max-h-0 opacity-0"
         }`}
       >
         <div className="px-6 py-6 flex flex-col gap-4">
